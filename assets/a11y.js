@@ -37,6 +37,10 @@
 		try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
 	}
 
+	function pageWrapper() {
+		return document.querySelector('.sa-a11y-page');
+	}
+
 	function applyState(state) {
 		var body = document.body;
 		var cls = (body.className || '').split(/\s+/).filter(function (c) {
@@ -46,9 +50,17 @@
 		TOGGLES.forEach(function (o) {
 			if (state[o.id]) body.classList.add('sa-a11y-' + o.id);
 		});
-		// Apply current font size step (clamped)
-		var fs = state.fontSize || 100;
-		body.style.setProperty('font-size', fs + '%', 'important');
+
+		// Apply zoom (which actually scales every element, unlike body
+		// font-size which Divi overrides with explicit px) to the page
+		// wrapper. Widget stays outside the wrapper so it never gets
+		// scaled or inverted.
+		var wrap = pageWrapper();
+		if (wrap) {
+			var fs = (state.fontSize || 100) / 100;
+			wrap.style.zoom = fs;
+		}
+
 		updateButtonStates(state);
 		updateTtsHandler(state);
 	}
@@ -139,8 +151,24 @@
 		}
 	}
 
+	function wrapPageContent() {
+		// Move every existing body child into a wrapper div so we can
+		// apply zoom/filter there without affecting our toggle button.
+		// Idempotent — safe to call multiple times.
+		if (document.querySelector('.sa-a11y-page')) return;
+		var wrap = document.createElement('div');
+		wrap.className = 'sa-a11y-page';
+		var first = document.body.firstChild;
+		while (first) {
+			wrap.appendChild(first);
+			first = document.body.firstChild;
+		}
+		document.body.appendChild(wrap);
+	}
+
 	// Build UI
 	function buildUI() {
+		wrapPageContent();
 		var btn = document.createElement('button');
 		btn.className = 'sa-a11y-toggle';
 		btn.type = 'button';
@@ -149,10 +177,12 @@
 		// Wheelchair-with-rider icon (simplified, drawn paths — no
 		// external dependencies, no font reliance). Person profile facing
 		// right with circular wheel beneath.
+		// Material Icons "accessible" path (Apache 2.0): a person seated in
+		// a wheelchair, viewed in profile with one arm extended forward.
 		btn.innerHTML =
-			'<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-			'<circle cx="14.5" cy="5.5" r="2.6" fill="#ffffff"/>' +
-			'<path fill="#ffffff" d="M14.5 9.4 c-1.7 0-3 1.3-3 3 v3.7 c0 1 .6 1.9 1.5 2.3 L17 19.7 v3.5 h-1.3 c-.7-2.1-2.6-3.6-5-3.6 -2.9 0-5.2 2.3-5.2 5.2 s2.3 5.2 5.2 5.2 c2.6 0 4.7-1.9 5.1-4.4 h2.8 c.6 0 1.1-.4 1.2-1 l1.4-6 c.1-.5-.1-1-.5-1.3 l-3.4-2.4 v-1.7 h3.7 c.6 0 1.2-.5 1.2-1.2 s-.5-1.2-1.2-1.2 h-3.7 V12.4 c0-1.7-1.3-3-3-3 z M10.7 21.8 c1.6 0 2.9 1.2 3.1 2.7 H13 v.4 c-.1 1.6-1.5 2.8-3.1 2.7 -1.7 0-3-1.3-3-3 s1.3-2.8 3-2.8 z"/>' +
+			'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="32" height="32">' +
+			'<circle cx="12" cy="4" r="2" fill="#ffffff"/>' +
+			'<path fill="#ffffff" d="M19 13v-2c-1.54.02-3.09-.75-4.07-1.83l-1.29-1.43c-.17-.19-.38-.34-.61-.45-.01 0-.01-.01-.02-.01H13c-.35-.2-.75-.3-1.18-.26C10.79 7.12 10 8.04 10 9.09V15c0 1.1.9 2 2 2h5v5h2v-5.5c0-1.1-.9-2-2-2h-3v-3.45c1.29 1.07 3.25 1.94 5 1.95zm-6.17 5c-.41 1.16-1.52 2-2.83 2-1.66 0-3-1.34-3-3 0-1.31.84-2.41 2-2.83V12.1c-2.28.46-4 2.48-4 4.9 0 2.76 2.24 5 5 5 2.42 0 4.44-1.72 4.9-4h-2.07z"/>' +
 			'</svg>';
 		document.body.appendChild(btn);
 

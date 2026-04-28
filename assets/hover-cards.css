@@ -1,3 +1,52 @@
+/* ---------- Home page counters section ---------- */
+.sa-counters-row {
+	max-width: 1200px;
+	margin: 0 auto !important;
+	padding: 0 !important;
+}
+
+.sa-counters {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important;
+	gap: 30px !important;
+	padding: 60px 30px !important;
+	text-align: center !important;
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+.sa-counter {
+	padding: 10px 8px;
+}
+
+.sa-counter-number {
+	font-family: 'Quicksand', Helvetica, Arial, sans-serif !important;
+	font-size: 64px !important;
+	font-weight: 700 !important;
+	color: #6f2878 !important;
+	line-height: 1 !important;
+	margin-bottom: 8px !important;
+}
+
+.sa-counter-label {
+	font-family: 'Quicksand', Helvetica, Arial, sans-serif !important;
+	font-size: 16px !important;
+	font-weight: 600 !important;
+	color: #555 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 1.5px !important;
+	line-height: 1.3 !important;
+}
+
+@media (max-width: 980px) {
+	.sa-counters {
+		grid-template-columns: 1fr !important;
+		gap: 25px !important;
+		padding: 40px 20px !important;
+	}
+	.sa-counter-number { font-size: 52px !important; }
+}
+
 /* Hide any slider arrows that remain INSIDE the slider container.
    Divi's runtime slider JS injects its own copies; we use the ones our
    JS moves out to the parent section so they appear at the section's

@@ -10,11 +10,11 @@
 	left: auto !important;
 	width: 56px !important;
 	height: 56px !important;
-	border-radius: 50% !important;
-	background: #6f2878 !important;
+	border-radius: 8px !important;
+	background: #1a3a8a !important;
 	color: #ffffff !important;
 	border: 0 !important;
-	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3) !important;
 	cursor: pointer !important;
 	z-index: 2147483646 !important;
 	display: flex !important;
@@ -209,20 +209,16 @@ body.sa-a11y-high-contrast video {
 	filter: grayscale(100%) contrast(1.1) !important;
 }
 
-/* Negative contrast (invert) */
-body.sa-a11y-invert {
+/* Negative contrast (invert)
+ * Filter is applied to the .sa-a11y-page wrapper rather than body so it
+ * doesn't break position:fixed on the toggle button (CSS filter on a
+ * containing block converts fixed positioning to absolute). */
+body.sa-a11y-invert .sa-a11y-page {
 	filter: invert(100%) hue-rotate(180deg) !important;
 }
-body.sa-a11y-invert img,
-body.sa-a11y-invert video,
-body.sa-a11y-invert iframe {
-	filter: invert(100%) hue-rotate(180deg) !important;
-}
-/* Double-invert the widget itself so it stays visually correct while
-   the rest of the page is inverted. */
-body.sa-a11y-invert .sa-a11y-toggle,
-body.sa-a11y-invert .sa-a11y-panel,
-body.sa-a11y-invert .sa-a11y-reading-guide {
+body.sa-a11y-invert .sa-a11y-page img,
+body.sa-a11y-invert .sa-a11y-page video,
+body.sa-a11y-invert .sa-a11y-page iframe {
 	filter: invert(100%) hue-rotate(180deg) !important;
 }
 

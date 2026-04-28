@@ -1,25 +1,29 @@
 /* Swift Aid accessibility widget
  * Features activate when their corresponding body class is set by a11y.js. */
 
-/* ---------- Floating button ---------- */
+/* ---------- Floating button (always visible, viewport-pinned) ---------- */
 .sa-a11y-toggle {
-	position: fixed;
-	bottom: 24px;
-	right: 24px;
-	width: 56px;
-	height: 56px;
-	border-radius: 50%;
-	background: #6f2878;
-	color: #ffffff;
-	border: 0;
-	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-	cursor: pointer;
-	z-index: 2147483646;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: transform 0.2s ease, background 0.2s ease;
-	font-family: inherit;
+	position: fixed !important;
+	bottom: 24px !important;
+	right: 24px !important;
+	top: auto !important;
+	left: auto !important;
+	width: 56px !important;
+	height: 56px !important;
+	border-radius: 50% !important;
+	background: #6f2878 !important;
+	color: #ffffff !important;
+	border: 0 !important;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+	cursor: pointer !important;
+	z-index: 2147483646 !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	transition: transform 0.2s ease, background 0.2s ease !important;
+	font-family: inherit !important;
+	padding: 0 !important;
+	margin: 0 !important;
 }
 
 .sa-a11y-toggle:hover,
@@ -95,6 +99,43 @@
 	background: #6f2878;
 	color: #ffffff;
 	border-color: #6f2878;
+}
+
+/* Text-size action buttons sit in a horizontal row */
+.sa-a11y-panel .sa-a11y-text-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 8px;
+	margin-bottom: 14px;
+}
+
+.sa-a11y-panel .sa-a11y-text-row button {
+	padding: 12px 4px;
+	font-size: 16px;
+	font-weight: 600;
+	background: #f3eff5;
+	color: #1b1b1b;
+	border: 2px solid transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	font-family: inherit;
+	transition: background 0.15s ease;
+}
+
+.sa-a11y-panel .sa-a11y-text-row button:hover { background: #e7deeb; }
+
+.sa-a11y-panel .sa-a11y-text-row button .sa-a11y-icon {
+	display: block;
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.sa-a11y-panel .sa-a11y-text-row button .sa-a11y-text-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 500;
+	margin-top: 2px;
+	color: #555;
 }
 
 .sa-a11y-panel button.sa-a11y-opt .sa-a11y-icon {
@@ -175,6 +216,13 @@ body.sa-a11y-invert {
 body.sa-a11y-invert img,
 body.sa-a11y-invert video,
 body.sa-a11y-invert iframe {
+	filter: invert(100%) hue-rotate(180deg) !important;
+}
+/* Double-invert the widget itself so it stays visually correct while
+   the rest of the page is inverted. */
+body.sa-a11y-invert .sa-a11y-toggle,
+body.sa-a11y-invert .sa-a11y-panel,
+body.sa-a11y-invert .sa-a11y-reading-guide {
 	filter: invert(100%) hue-rotate(180deg) !important;
 }
 

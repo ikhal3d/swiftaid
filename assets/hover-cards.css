@@ -1,3 +1,87 @@
+/* Slider arrows — Divi's font-glyph approach isn't loading reliably on
+   the static mirror, so paint visible chevrons via Unicode and keep the
+   absolute positioning Divi's own CSS already provides. */
+.et_pb_slider .et-pb-arrow-prev,
+.et_pb_slider .et-pb-arrow-next {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 100;
+	font-size: 0;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.85);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	opacity: 1;
+	transition: background 0.2s ease, transform 0.2s ease;
+	cursor: pointer;
+}
+
+.et_pb_slider .et-pb-arrow-prev { left: 12px; }
+.et_pb_slider .et-pb-arrow-next { right: 12px; }
+
+.et_pb_slider .et-pb-arrow-prev:hover,
+.et_pb_slider .et-pb-arrow-next:hover {
+	background: #ffffff;
+	transform: translateY(-50%) scale(1.08);
+}
+
+.et_pb_slider .et-pb-arrow-prev:before,
+.et_pb_slider .et-pb-arrow-next:before {
+	font-family: Arial, sans-serif !important;
+	font-size: 28px;
+	line-height: 1;
+	color: #6f2878;
+	font-weight: 700;
+	content: "";
+	position: static;
+	margin: 0;
+	opacity: 1;
+}
+
+.et_pb_slider .et-pb-arrow-prev:before { content: "\2039"; }
+.et_pb_slider .et-pb-arrow-next:before { content: "\203A"; }
+
+/* Controllers (dots) — make them visible, clickable, and on-brand */
+.et_pb_slider .et-pb-controllers {
+	position: absolute;
+	bottom: 14px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	z-index: 100;
+}
+
+.et_pb_slider .et-pb-controllers a {
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	margin: 0 5px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.5);
+	font-size: 0;
+	text-decoration: none;
+	transition: background 0.2s ease, transform 0.2s ease;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+.et_pb_slider .et-pb-controllers a:hover { background: rgba(255, 255, 255, 0.8); }
+
+.et_pb_slider .et-pb-controllers a.et-pb-active-control {
+	background: #8bbc3a;
+	transform: scale(1.2);
+}
+
+/* Smooth slide transitions */
+.et_pb_slider .et_pb_slide {
+	transition: opacity 0.4s ease;
+}
+
 @media (hover: hover) {
 	body a.et_pb_button[href*="ndis-provider-"],
 	body #page-container .et_pb_section a.et_pb_button[href*="ndis-provider-"] {

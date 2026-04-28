@@ -51,30 +51,31 @@
 	transition: background-color 9999s ease-in-out 0s !important;
 }
 
-/* Custom checkbox / radio indicators: Divi renders the visual square/circle
-   with an empty <i> after the label. Force it to white. */
+/* Custom checkbox / radio indicators: Divi renders a small <i> after the
+   label as the visible square/circle. Give it a purple outline so it's
+   visible on the white form card, with a brand-green fill when checked. */
 .et_pb_contact_form input[type="checkbox"] + label i,
 .et_pb_contact_form_static input[type="checkbox"] + label i,
 .et_pb_contact_form input[type="radio"] + label i,
 .et_pb_contact_form_static input[type="radio"] + label i {
 	background-color: #ffffff !important;
-	border-color: #ffffff !important;
+	border: 2px solid #6f2878 !important;
+}
+
+.et_pb_contact_form input[type="checkbox"]:checked + label i,
+.et_pb_contact_form_static input[type="checkbox"]:checked + label i,
+.et_pb_contact_form input[type="radio"]:checked + label i,
+.et_pb_contact_form_static input[type="radio"]:checked + label i {
+	background-color: #8bbc3a !important;
+	border-color: #8bbc3a !important;
 }
 
 .et_pb_contact_form input[type="checkbox"]:checked + label i:before,
 .et_pb_contact_form_static input[type="checkbox"]:checked + label i:before,
 .et_pb_contact_form input[type="radio"]:checked + label i:before,
 .et_pb_contact_form_static input[type="radio"]:checked + label i:before {
-	color: #6f2878 !important;
-	background-color: #6f2878 !important;
-}
-
-/* Labels stay white */
-.et_pb_contact_form_static label,
-.et_pb_contact_form_static .et_pb_contact_field_options_title,
-.et_pb_contact_form_static .et_pb_contact_field_checkbox label,
-.et_pb_contact_form_static .et_pb_contact_field_radio label {
 	color: #ffffff !important;
+	background-color: transparent !important;
 }
 
 /* Career form (Contact Form 7) — same dark purple + white text treatment */

@@ -65,19 +65,25 @@
 	}
 
 	function renderSuccess(form) {
-		// Replace the form's contents with a clear thank-you state. Keeps the
-		// same surrounding container so the page layout stays stable.
-		form.innerHTML = '';
-		form.style.cssText = 'background:#8bbc3a;color:#ffffff;padding:30px 24px;border-radius:14px;text-align:center;';
+		// Insert a thank-you panel as a sibling of the form, then hide the
+		// form. Inserting as a sibling preserves the surrounding container's
+		// height so the layout doesn't collapse.
+		var panel = document.createElement('div');
+		panel.className = 'swift-aid-form-success';
+		panel.style.cssText = 'background:#8bbc3a;color:#ffffff;padding:30px 24px;border-radius:14px;text-align:center;margin:18px 0;';
 		var h = document.createElement('h3');
 		h.style.cssText = 'color:#ffffff;margin:0 0 10px;font-size:24px;';
 		h.textContent = 'Thanks — message received';
 		var p = document.createElement('p');
 		p.style.cssText = 'margin:0;color:#ffffff;font-size:16px;line-height:1.5;';
 		p.textContent = 'We\'ve got your details and will be in touch shortly. If your enquiry is urgent, call 1300 718 970.';
-		form.appendChild(h);
-		form.appendChild(p);
-		form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		panel.appendChild(h);
+		panel.appendChild(p);
+
+		var parent = form.parentNode || document.body;
+		parent.insertBefore(panel, form);
+		form.style.display = 'none';
+		panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	}
 
 	function showError(form, text) {

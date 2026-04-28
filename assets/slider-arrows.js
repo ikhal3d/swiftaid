@@ -47,18 +47,48 @@
 		return div;
 	}
 
+	function findSection(slider) {
+		var n = slider.parentNode;
+		while (n && n !== document.body) {
+			if (n.classList && n.classList.contains('et_pb_section')) return n;
+			n = n.parentNode;
+		}
+		return null;
+	}
+
+	function moveArrowsToSection(slider, section) {
+		// Look for the existing arrows wrapper or bare arrow links inside
+		// the slider, then move them to the section so they land at the
+		// section's edges instead of the (potentially card-width) slider's.
+		var arrowsContainer = slider.querySelector('.et-pb-slider-arrows');
+		if (arrowsContainer) {
+			arrowsContainer.dataset.swiftAidSliderId = slider.dataset.swiftAidId;
+			section.appendChild(arrowsContainer);
+			return arrowsContainer;
+		}
+		var prev = slider.querySelector('.et-pb-arrow-prev');
+		var next = slider.querySelector('.et-pb-arrow-next');
+		if (!prev && !next) return null;
+		var wrap = document.createElement('div');
+		wrap.className = 'et-pb-slider-arrows';
+		wrap.dataset.swiftAidSliderId = slider.dataset.swiftAidId;
+		if (prev) wrap.appendChild(prev);
+		if (next) wrap.appendChild(next);
+		section.appendChild(wrap);
+		return wrap;
+	}
+
 	function initSlider(slider) {
 		if (slider.dataset.swiftAidInited === '1') return;
 		var slides = slider.querySelectorAll('.et_pb_slide');
 		if (slides.length < 2) return;
 		slider.dataset.swiftAidInited = '1';
+		slider.dataset.swiftAidId = 'sa-slider-' + Math.random().toString(36).slice(2, 9);
 
-		// Position container so absolutely-positioned arrows / controllers
-		// land where Divi's CSS expects them
 		var pos = window.getComputedStyle(slider).position;
 		if (pos === 'static') slider.style.position = 'relative';
 
-		// Ensure controllers (dots) exist
+		// Ensure controllers (dots) exist inside the slider
 		var controllers = ensureControllers(slider);
 		if (controllers) {
 			var dots = controllers.querySelectorAll('a');
@@ -72,9 +102,26 @@
 			}
 		}
 
-		// Wire arrows (already injected by Python, just attach handlers)
-		var prev = slider.querySelector('.et-pb-slider-arrows .et-pb-arrow-prev, > .et-pb-arrow-prev, .et-pb-arrow-prev');
-		var next = slider.querySelector('.et-pb-slider-arrows .et-pb-arrow-next, > .et-pb-arrow-next, .et-pb-arrow-next');
+		// Move arrows to the parent section so they land at section edges
+		var section = findSection(slider);
+		if (section) {
+			var sPos = window.getComputedStyle(section).position;
+			if (sPos === 'static') section.style.position = 'relative';
+			moveArrowsToSection(slider, section);
+		}
+
+		// Wire arrow clicks (works whether arrows are in slider or section)
+		var arrows = (section || slider).querySelectorAll(
+			'[data-swift-aid-slider-id="' + slider.dataset.swiftAidId + '"] .et-pb-arrow-prev,' +
+			'[data-swift-aid-slider-id="' + slider.dataset.swiftAidId + '"] .et-pb-arrow-next,' +
+			'.et-pb-arrow-prev, .et-pb-arrow-next'
+		);
+		// Filter to arrows that are connected to THIS slider (in the moved
+		// container or still inside it)
+		var prev = (section && section.querySelector('[data-swift-aid-slider-id="' + slider.dataset.swiftAidId + '"] .et-pb-arrow-prev'))
+			|| slider.querySelector('.et-pb-arrow-prev');
+		var next = (section && section.querySelector('[data-swift-aid-slider-id="' + slider.dataset.swiftAidId + '"] .et-pb-arrow-next'))
+			|| slider.querySelector('.et-pb-arrow-next');
 		if (prev) {
 			prev.addEventListener('click', function (e) {
 				e.preventDefault();

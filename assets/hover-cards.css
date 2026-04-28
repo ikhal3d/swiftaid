@@ -1,50 +1,72 @@
-/* Slider arrows — Divi's font-glyph approach isn't loading reliably on
-   the static mirror, so paint visible chevrons via Unicode and keep the
-   absolute positioning Divi's own CSS already provides. */
+/* Slider side arrows — plain white chevrons at the section's left/right
+   edges, matching the home page's fullwidth slider style. JS moves these
+   anchors out of the slider and into the parent .et_pb_section so they
+   sit at the section edges regardless of slider width. */
+.et_pb_section .et-pb-arrow-prev,
+.et_pb_section .et-pb-arrow-next,
 .et_pb_slider .et-pb-arrow-prev,
 .et_pb_slider .et-pb-arrow-next {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 100;
-	font-size: 0;
-	width: 44px;
-	height: 44px;
-	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.85);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-decoration: none;
-	opacity: 1;
-	transition: background 0.2s ease, transform 0.2s ease;
-	cursor: pointer;
+	position: absolute !important;
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+	z-index: 100 !important;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	width: auto !important;
+	height: auto !important;
+	font-size: 0 !important;
+	text-decoration: none !important;
+	cursor: pointer !important;
+	opacity: 0.9 !important;
+	padding: 16px !important;
+	margin-top: 0 !important;
+	transition: opacity 0.2s ease, transform 0.2s ease !important;
 }
 
-.et_pb_slider .et-pb-arrow-prev { left: 12px; }
-.et_pb_slider .et-pb-arrow-next { right: 12px; }
+.et_pb_section .et-pb-arrow-prev,
+.et_pb_slider .et-pb-arrow-prev { left: 24px !important; }
 
+.et_pb_section .et-pb-arrow-next,
+.et_pb_slider .et-pb-arrow-next { right: 24px !important; }
+
+.et_pb_section .et-pb-arrow-prev:hover,
+.et_pb_section .et-pb-arrow-next:hover,
 .et_pb_slider .et-pb-arrow-prev:hover,
 .et_pb_slider .et-pb-arrow-next:hover {
-	background: #ffffff;
-	transform: translateY(-50%) scale(1.08);
+	opacity: 1 !important;
+	transform: translateY(-50%) scale(1.15) !important;
 }
 
+.et_pb_section .et-pb-arrow-prev:before,
+.et_pb_section .et-pb-arrow-next:before,
 .et_pb_slider .et-pb-arrow-prev:before,
 .et_pb_slider .et-pb-arrow-next:before {
-	font-family: Arial, sans-serif !important;
-	font-size: 28px;
-	line-height: 1;
-	color: #6f2878;
-	font-weight: 700;
-	content: "";
-	position: static;
-	margin: 0;
-	opacity: 1;
+	font-family: Arial, "Helvetica Neue", sans-serif !important;
+	font-size: 64px !important;
+	line-height: 1 !important;
+	font-weight: 300 !important;
+	color: #ffffff !important;
+	display: inline-block !important;
+	position: static !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	opacity: 1 !important;
+	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
 }
 
-.et_pb_slider .et-pb-arrow-prev:before { content: "\2039"; }
-.et_pb_slider .et-pb-arrow-next:before { content: "\203A"; }
+.et_pb_section .et-pb-arrow-prev:before,
+.et_pb_slider .et-pb-arrow-prev:before { content: "\2039" !important; }
+
+.et_pb_section .et-pb-arrow-next:before,
+.et_pb_slider .et-pb-arrow-next:before { content: "\203A" !important; }
+
+/* On non-fullwidth sliders the arrows used to inherit dark text (Divi's
+   rule for et_pb_bg_layout_light) — keep them white at the section level
+   so they're visible against the section background. */
+.et_pb_section .et-pb-arrow-prev,
+.et_pb_section .et-pb-arrow-next { color: #ffffff !important; }
 
 /* Controllers (dots) — make them visible, clickable, and on-brand */
 .et_pb_slider .et-pb-controllers {

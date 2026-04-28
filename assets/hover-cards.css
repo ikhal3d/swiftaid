@@ -11,6 +11,15 @@
 	}
 }
 
+/* Hide Divi's own validation message — forms.js does its own validation
+   and any "Please fill in the following fields" panel left over from Divi's
+   JS would just duplicate the inline error we already show. */
+.et-pb-contact-message,
+.et_pb_contact_form_static .et-pb-contact-message,
+.et_pb_contact_form_container .et-pb-contact-message {
+	display: none !important;
+}
+
 /* Divi contact form: lock dark purple bg + white text in every state.
    Selector covers both et_pb_contact_form and the renamed et_pb_contact_form_static. */
 .et_pb_contact_form .input,

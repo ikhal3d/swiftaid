@@ -52,6 +52,46 @@
 		return out;
 	}
 
+	function isRequired(field) {
+		if (field.required) return true;
+		if (field.getAttribute('aria-required') === 'true') return true;
+		if (field.getAttribute('data-required_mark') === 'required') return true;
+		return false;
+	}
+
+	function fieldLabel(field) {
+		var name = field.getAttribute('data-original_id') || field.name || '';
+		// Try to find a matching <label> in the form
+		if (field.id) {
+			var byFor = document.querySelector('label[for="' + field.id + '"]');
+			if (byFor && byFor.textContent.trim()) return byFor.textContent.trim().replace(/\*+\s*$/, '');
+		}
+		var placeholder = field.getAttribute('placeholder');
+		if (placeholder) return placeholder.replace(/\*+\s*$/, '').trim();
+		return name.replace(/_/g, ' ');
+	}
+
+	function validateForm(form) {
+		var fields = form.querySelectorAll('input, textarea, select');
+		var missing = [];
+		var seenGroups = {};
+		for (var i = 0; i < fields.length; i++) {
+			var f = fields[i];
+			if (f.type === 'hidden' || f.type === 'submit' || f.type === 'reset' || f.type === 'button') continue;
+			if (!isRequired(f)) continue;
+
+			if (f.type === 'checkbox' || f.type === 'radio') {
+				if (seenGroups[f.name]) continue;
+				seenGroups[f.name] = true;
+				var checked = form.querySelectorAll('input[name="' + f.name + '"]:checked');
+				if (checked.length === 0) missing.push(fieldLabel(f));
+			} else {
+				if (!f.value || !String(f.value).trim()) missing.push(fieldLabel(f));
+			}
+		}
+		return missing;
+	}
+
 	function setBusy(button, busy, original) {
 		if (!button) return;
 		button.disabled = busy;
@@ -100,6 +140,16 @@
 	function handleSubmit(e) {
 		e.preventDefault();
 		var form = e.target;
+
+		var missing = validateForm(form);
+		if (missing.length > 0) {
+			showError(form, 'Please fill in: ' + missing.join(', '));
+			// Make sure the error is visible
+			var msg = form.querySelector('.swift-aid-form-msg');
+			if (msg && msg.scrollIntoView) msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			return;
+		}
+
 		var submit = form.querySelector('button[type="submit"], input[type="submit"]');
 		var original = submit ? (submit.tagName === 'INPUT' ? submit.value : submit.innerText) : '';
 		setBusy(submit, true, original);

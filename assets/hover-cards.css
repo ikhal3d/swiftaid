@@ -11,6 +11,28 @@
 	}
 }
 
+/* Headings demoted by the SEO cascade fix (orphan H4/H5/H6 promoted to
+   close gaps left by Divi's H2-then-H4 default). Override the Divi
+   per-text-module heading rules so the visual size matches the original
+   tag. Color/text-align inherit from context so per-section colors stay. */
+.seo-was-h4 {
+	font-size: 18px !important;
+	font-weight: 700 !important;
+	line-height: 1.4em !important;
+}
+
+.seo-was-h5 {
+	font-size: 16px !important;
+	font-weight: 600 !important;
+	line-height: 1.4em !important;
+}
+
+.seo-was-h6 {
+	font-size: 14px !important;
+	font-weight: 500 !important;
+	line-height: 1.4em !important;
+}
+
 /* Hide Divi's own validation message — forms.js does its own validation
    and any "Please fill in the following fields" panel left over from Divi's
    JS would just duplicate the inline error we already show. */

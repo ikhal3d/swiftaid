@@ -1,0 +1,242 @@
+/* Swift Aid accessibility widget
+ * Features activate when their corresponding body class is set by a11y.js. */
+
+/* ---------- Floating button ---------- */
+.sa-a11y-toggle {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: #6f2878;
+	color: #ffffff;
+	border: 0;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	cursor: pointer;
+	z-index: 2147483646;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.2s ease, background 0.2s ease;
+	font-family: inherit;
+}
+
+.sa-a11y-toggle:hover,
+.sa-a11y-toggle:focus-visible {
+	background: #8b3a96;
+	transform: scale(1.08);
+	outline: 2px solid #ffffff;
+	outline-offset: 3px;
+}
+
+.sa-a11y-toggle svg {
+	width: 32px;
+	height: 32px;
+	fill: #ffffff;
+}
+
+/* ---------- Slide-out panel ---------- */
+.sa-a11y-panel {
+	position: fixed;
+	bottom: 90px;
+	right: 24px;
+	width: 320px;
+	max-width: calc(100vw - 32px);
+	max-height: calc(100vh - 120px);
+	overflow-y: auto;
+	background: #ffffff;
+	color: #1b1b1b;
+	border-radius: 14px;
+	box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+	padding: 18px;
+	z-index: 2147483646;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+	font-size: 15px;
+	line-height: 1.4;
+	display: none;
+}
+
+.sa-a11y-panel.sa-open { display: block; }
+
+.sa-a11y-panel h3 {
+	font-size: 18px;
+	margin: 0 0 4px;
+	color: #6f2878;
+	font-weight: 700;
+}
+
+.sa-a11y-panel .sa-a11y-sub {
+	font-size: 12px;
+	color: #666;
+	margin: 0 0 14px;
+}
+
+.sa-a11y-panel button.sa-a11y-opt {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 12px;
+	margin: 0 0 8px;
+	background: #f3eff5;
+	color: #1b1b1b;
+	border: 2px solid transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	font: inherit;
+	text-align: left;
+	transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.sa-a11y-panel button.sa-a11y-opt:hover { background: #e7deeb; }
+
+.sa-a11y-panel button.sa-a11y-opt.sa-active {
+	background: #6f2878;
+	color: #ffffff;
+	border-color: #6f2878;
+}
+
+.sa-a11y-panel button.sa-a11y-opt .sa-a11y-icon {
+	font-size: 18px;
+	width: 22px;
+	text-align: center;
+	flex-shrink: 0;
+}
+
+.sa-a11y-panel button.sa-a11y-reset {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	margin-top: 8px;
+	background: #c62828;
+	color: #ffffff;
+	border: 0;
+	border-radius: 8px;
+	cursor: pointer;
+	font: inherit;
+	font-weight: 600;
+}
+
+.sa-a11y-panel button.sa-a11y-reset:hover { background: #a31f1f; }
+
+.sa-a11y-panel .sa-a11y-close {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 28px;
+	height: 28px;
+	border: 0;
+	background: transparent;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+	color: #888;
+}
+
+.sa-a11y-panel .sa-a11y-close:hover { color: #000; }
+
+/* ---------- Feature implementations ---------- */
+
+/* Bigger text */
+body.sa-a11y-bigger-text { font-size: 120% !important; }
+body.sa-a11y-biggest-text { font-size: 140% !important; }
+
+/* Dyslexia-friendly font */
+body.sa-a11y-dyslexic,
+body.sa-a11y-dyslexic *:not(.sa-a11y-toggle):not(.sa-a11y-toggle *):not(.sa-a11y-panel):not(.sa-a11y-panel *) {
+	font-family: "Comic Sans MS", "Comic Sans", "OpenDyslexic", sans-serif !important;
+	letter-spacing: 0.03em !important;
+	word-spacing: 0.16em !important;
+	line-height: 1.7 !important;
+}
+
+/* High contrast (dark) */
+body.sa-a11y-high-contrast,
+body.sa-a11y-high-contrast *:not(.sa-a11y-toggle):not(.sa-a11y-toggle *):not(.sa-a11y-panel):not(.sa-a11y-panel *) {
+	background: #000000 !important;
+	background-color: #000000 !important;
+	color: #ffffff !important;
+	border-color: #ffffff !important;
+}
+body.sa-a11y-high-contrast a:not(.sa-a11y-toggle):not(.sa-a11y-panel a) {
+	color: #ffff00 !important;
+	text-decoration: underline !important;
+}
+body.sa-a11y-high-contrast img,
+body.sa-a11y-high-contrast video {
+	filter: grayscale(100%) contrast(1.1) !important;
+}
+
+/* Negative contrast (invert) */
+body.sa-a11y-invert {
+	filter: invert(100%) hue-rotate(180deg) !important;
+}
+body.sa-a11y-invert img,
+body.sa-a11y-invert video,
+body.sa-a11y-invert iframe {
+	filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+/* Highlight links */
+body.sa-a11y-highlight-links a:not(.sa-a11y-toggle):not(.sa-a11y-panel a) {
+	background: #ffff00 !important;
+	color: #000000 !important;
+	text-decoration: underline !important;
+	font-weight: 700 !important;
+	box-shadow: 0 0 0 2px #000000 !important;
+	padding: 1px 3px !important;
+}
+
+/* Pause animations & transitions */
+body.sa-a11y-pause-anim *,
+body.sa-a11y-pause-anim *::before,
+body.sa-a11y-pause-anim *::after {
+	animation-duration: 0.001s !important;
+	animation-iteration-count: 1 !important;
+	transition-duration: 0.001s !important;
+	transition-delay: 0s !important;
+	scroll-behavior: auto !important;
+}
+
+/* Bigger cursor */
+body.sa-a11y-big-cursor,
+body.sa-a11y-big-cursor * {
+	cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'><path fill='%236f2878' stroke='white' stroke-width='1.2' d='M3.5 2 L3.5 19 L8 14.5 L11 21 L13.5 20 L10.5 13.5 L17 13.5 Z'/></svg>") 4 4, auto !important;
+}
+
+/* Readable layout: wider line spacing, no italics, no all-caps text-transform */
+body.sa-a11y-readable,
+body.sa-a11y-readable *:not(.sa-a11y-toggle):not(.sa-a11y-toggle *):not(.sa-a11y-panel):not(.sa-a11y-panel *) {
+	line-height: 1.8 !important;
+	letter-spacing: 0.02em !important;
+	font-style: normal !important;
+	text-transform: none !important;
+}
+
+/* Reading guide bar */
+.sa-a11y-reading-guide {
+	display: none;
+	position: fixed;
+	left: 0;
+	right: 0;
+	height: 36px;
+	background: rgba(255, 255, 0, 0.18);
+	border-top: 2px solid rgba(0, 0, 0, 0.6);
+	border-bottom: 2px solid rgba(0, 0, 0, 0.6);
+	pointer-events: none;
+	z-index: 2147483645;
+}
+body.sa-a11y-guide .sa-a11y-reading-guide { display: block; }
+
+/* Read-aloud highlight */
+.sa-a11y-tts-target {
+	background: #ffe066 !important;
+	outline: 2px solid #6f2878 !important;
+	color: #000 !important;
+	cursor: pointer !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sa-a11y-toggle, .sa-a11y-panel button { transition: none !important; }
+}

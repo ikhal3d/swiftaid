@@ -104,24 +104,31 @@
 		}
 	}
 
-	function findStableAncestor(form) {
-		// Walk up to the nearest Divi/CF7 module wrapper. Inserting our panel
-		// as a sibling of THAT wrapper (not of the form) means the panel
-		// lives in the page's column/row, which keeps its dimensions even
-		// after we hide the form's whole module.
-		var node = form.parentNode;
-		while (node && node !== document.body) {
-			if (node.classList && (
-				node.classList.contains('et_pb_contact_form_container') ||
-				node.classList.contains('et_pb_code') ||
-				node.classList.contains('wpcf7')
-			)) return node;
-			node = node.parentNode;
-		}
-		return form;
+	function showTopBanner(text, isError) {
+		// Fixed-position banner pinned to the top of the viewport — visible
+		// regardless of where the form lived in the page or what its container
+		// did when we hid it. Auto-dismisses after 8s.
+		var b = document.createElement('div');
+		b.setAttribute('role', 'alert');
+		b.style.cssText = [
+			'position:fixed', 'top:0', 'left:0', 'right:0',
+			'background:' + (isError ? '#c62828' : '#8bbc3a'),
+			'color:#ffffff', 'padding:18px 24px',
+			'text-align:center', 'font-weight:600', 'font-size:16px',
+			'z-index:2147483647',
+			'box-shadow:0 4px 14px rgba(0,0,0,0.2)',
+			'font-family:inherit'
+		].join(';');
+		b.textContent = text;
+		document.body.appendChild(b);
+		setTimeout(function () {
+			b.style.transition = 'opacity 0.5s';
+			b.style.opacity = '0';
+			setTimeout(function () { try { b.remove(); } catch (e) {} }, 600);
+		}, 8000);
 	}
 
-	function renderSuccess(form) {
+	function buildPanel() {
 		var panel = document.createElement('div');
 		panel.className = 'swift-aid-form-success';
 		panel.style.cssText = 'display:block;background:#8bbc3a;color:#ffffff;padding:30px 24px;border-radius:14px;text-align:center;margin:18px 0;font-family:inherit;';
@@ -133,13 +140,31 @@
 		p.textContent = 'We\'ve got your details and will be in touch shortly. If your enquiry is urgent, call 1300 718 970.';
 		panel.appendChild(h);
 		panel.appendChild(p);
+		return panel;
+	}
 
-		var anchor = findStableAncestor(form);
-		var anchorParent = anchor.parentNode || document.body;
-		// Place panel just before the form's whole module, then hide the module.
-		anchorParent.insertBefore(panel, anchor);
-		anchor.style.display = 'none';
-		panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	function renderSuccess(form) {
+		// Always show the top banner first — guaranteed visible feedback even
+		// if the inline replacement ends up in a collapsed container.
+		showTopBanner('Thanks — your message has been received. We will be in touch shortly.', false);
+
+		// Inline replacement: replace the form's parent's contents with the
+		// success panel. Replacing the parent's children (rather than just
+		// hiding the form and inserting a sibling) guarantees the parent has
+		// at least the panel inside, so it can't collapse to zero-height.
+		try {
+			var parent = form.parentNode;
+			if (parent) {
+				parent.innerHTML = '';
+				parent.appendChild(buildPanel());
+				parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			} else {
+				form.style.display = 'none';
+			}
+		} catch (e) {
+			// Even if the inline swap throws, the top banner is already up.
+			try { form.style.display = 'none'; } catch (_) {}
+		}
 	}
 
 	function showError(form, text) {
@@ -180,12 +205,16 @@
 					renderSuccess(form);
 				} else {
 					setBusy(submit, false, original);
-					showError(form, 'Sorry, something went wrong: ' + (data && data.message ? data.message : 'please try again or email info@swiftaid.com.au directly.'));
+					var msg = 'Sorry, something went wrong: ' + (data && data.message ? data.message : 'please try again or email info@swiftaid.com.au directly.');
+					showError(form, msg);
+					showTopBanner(msg, true);
 				}
 			})
 			.catch(function () {
 				setBusy(submit, false, original);
-				showError(form, 'Sorry, the form could not be submitted. Please email info@swiftaid.com.au directly.');
+				var msg = 'Sorry, the form could not be submitted. Please email info@swiftaid.com.au directly.';
+				showError(form, msg);
+				showTopBanner(msg, true);
 			});
 	}
 

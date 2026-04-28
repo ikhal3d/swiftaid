@@ -8,3 +8,16 @@
 		box-shadow: 0 8px 20px rgba(111, 40, 120, 0.18) !important;
 	}
 }
+
+.et_pb_contact_form .input:-webkit-autofill,
+.et_pb_contact_form .input:-webkit-autofill:hover,
+.et_pb_contact_form .input:-webkit-autofill:focus,
+.et_pb_contact_form .input:-webkit-autofill:active,
+.et_pb_contact_form textarea:-webkit-autofill,
+.et_pb_contact_form textarea:-webkit-autofill:hover,
+.et_pb_contact_form textarea:-webkit-autofill:focus {
+	-webkit-box-shadow: 0 0 0 1000px #6f2878 inset !important;
+	-webkit-text-fill-color: #ffffff !important;
+	caret-color: #ffffff !important;
+	transition: background-color 9999s ease-in-out 0s !important;
+}

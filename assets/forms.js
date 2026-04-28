@@ -104,13 +104,27 @@
 		}
 	}
 
+	function findStableAncestor(form) {
+		// Walk up to the nearest Divi/CF7 module wrapper. Inserting our panel
+		// as a sibling of THAT wrapper (not of the form) means the panel
+		// lives in the page's column/row, which keeps its dimensions even
+		// after we hide the form's whole module.
+		var node = form.parentNode;
+		while (node && node !== document.body) {
+			if (node.classList && (
+				node.classList.contains('et_pb_contact_form_container') ||
+				node.classList.contains('et_pb_code') ||
+				node.classList.contains('wpcf7')
+			)) return node;
+			node = node.parentNode;
+		}
+		return form;
+	}
+
 	function renderSuccess(form) {
-		// Insert a thank-you panel as a sibling of the form, then hide the
-		// form. Inserting as a sibling preserves the surrounding container's
-		// height so the layout doesn't collapse.
 		var panel = document.createElement('div');
 		panel.className = 'swift-aid-form-success';
-		panel.style.cssText = 'background:#8bbc3a;color:#ffffff;padding:30px 24px;border-radius:14px;text-align:center;margin:18px 0;';
+		panel.style.cssText = 'display:block;background:#8bbc3a;color:#ffffff;padding:30px 24px;border-radius:14px;text-align:center;margin:18px 0;font-family:inherit;';
 		var h = document.createElement('h3');
 		h.style.cssText = 'color:#ffffff;margin:0 0 10px;font-size:24px;';
 		h.textContent = 'Thanks — message received';
@@ -120,9 +134,11 @@
 		panel.appendChild(h);
 		panel.appendChild(p);
 
-		var parent = form.parentNode || document.body;
-		parent.insertBefore(panel, form);
-		form.style.display = 'none';
+		var anchor = findStableAncestor(form);
+		var anchorParent = anchor.parentNode || document.body;
+		// Place panel just before the form's whole module, then hide the module.
+		anchorParent.insertBefore(panel, anchor);
+		anchor.style.display = 'none';
 		panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	}
 

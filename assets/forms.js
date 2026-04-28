@@ -1,6 +1,57 @@
 (function () {
 	'use strict';
 
+	// Divi/CF7 emit a lot of internal hidden fields (nonces, schema JSON, etc.)
+	// that pollute the email body and make Web3Forms classify the message as
+	// spam. Strip them before submission, and rename the user-facing fields
+	// from Divi's noisy form-id-suffixed names to readable ones.
+	var SKIP_FIELD_PATTERNS = [
+		/^et_pb_contactform_submit_/,
+		/^wpnonce-et-pb-contact-form-/,
+		/^wp_http_referer$/,
+		/^et_pb_contact_email_fields_/,
+		/^et_pb_contact_email_hidden_fields_/,
+		/^token$/,
+		/^_wpcf7$/,
+		/^_wpcf7_version$/,
+		/^_wpcf7_locale$/,
+		/^_wpcf7_unit_tag$/,
+		/^_wpcf7_container_post$/,
+		/^_wpcf7_posted_data_hash$/,
+		/^_wpcf7_recaptcha_response$/,
+		/^g-recaptcha-response$/,
+	];
+
+	// Divi names fields like et_pb_contact_<original_id>_0 — extract the inner part.
+	var DIVI_FIELD_RE = /^et_pb_contact_(.+?)_\d+$/;
+
+	function shouldSkip(name) {
+		for (var i = 0; i < SKIP_FIELD_PATTERNS.length; i++) {
+			if (SKIP_FIELD_PATTERNS[i].test(name)) return true;
+		}
+		return false;
+	}
+
+	function cleanName(name) {
+		var m = name.match(DIVI_FIELD_RE);
+		return m ? m[1] : name;
+	}
+
+	function buildPayload(form) {
+		var src = new FormData(form);
+		var out = new FormData();
+		var entries = [];
+		// Iterate via forEach for IE/Edge-old compat
+		src.forEach(function (value, key) { entries.push([key, value]); });
+		for (var i = 0; i < entries.length; i++) {
+			var key = entries[i][0];
+			var value = entries[i][1];
+			if (shouldSkip(key)) continue;
+			out.append(cleanName(key), value);
+		}
+		return out;
+	}
+
 	function setBusy(button, busy, original) {
 		if (!button) return;
 		button.disabled = busy;
@@ -13,16 +64,30 @@
 		}
 	}
 
-	function showMessage(form, text, isError) {
+	function renderSuccess(form) {
+		// Replace the form's contents with a clear thank-you state. Keeps the
+		// same surrounding container so the page layout stays stable.
+		form.innerHTML = '';
+		form.style.cssText = 'background:#8bbc3a;color:#ffffff;padding:30px 24px;border-radius:14px;text-align:center;';
+		var h = document.createElement('h3');
+		h.style.cssText = 'color:#ffffff;margin:0 0 10px;font-size:24px;';
+		h.textContent = 'Thanks — message received';
+		var p = document.createElement('p');
+		p.style.cssText = 'margin:0;color:#ffffff;font-size:16px;line-height:1.5;';
+		p.textContent = 'We\'ve got your details and will be in touch shortly. If your enquiry is urgent, call 1300 718 970.';
+		form.appendChild(h);
+		form.appendChild(p);
+		form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
+
+	function showError(form, text) {
 		var msg = form.querySelector('.swift-aid-form-msg');
 		if (!msg) {
 			msg = document.createElement('div');
 			msg.className = 'swift-aid-form-msg';
-			msg.style.cssText = 'padding:14px 18px;border-radius:10px;margin-top:18px;text-align:center;font-weight:600;font-size:16px;';
+			msg.style.cssText = 'padding:14px 18px;border-radius:10px;margin-top:18px;text-align:center;font-weight:600;font-size:16px;background:#c62828;color:#ffffff;';
 			form.appendChild(msg);
 		}
-		msg.style.background = isError ? '#c62828' : '#8bbc3a';
-		msg.style.color = '#ffffff';
 		msg.textContent = text;
 	}
 
@@ -35,21 +100,21 @@
 
 		fetch('https://api.web3forms.com/submit', {
 			method: 'POST',
-			body: new FormData(form),
+			body: buildPayload(form),
 		})
-			.then(function (r) { return r.json(); })
+			.then(function (r) { return r.json().catch(function () { return { success: false, message: 'unexpected response' }; }); })
 			.then(function (data) {
 				if (data && data.success) {
-					showMessage(form, 'Thanks — your message has been received. We will be in touch shortly.', false);
-					form.reset();
+					renderSuccess(form);
 				} else {
-					showMessage(form, 'Sorry, something went wrong: ' + (data && data.message ? data.message : 'please try again or email info@swiftaid.com.au.'), true);
+					setBusy(submit, false, original);
+					showError(form, 'Sorry, something went wrong: ' + (data && data.message ? data.message : 'please try again or email info@swiftaid.com.au directly.'));
 				}
 			})
 			.catch(function () {
-				showMessage(form, 'Sorry, the form could not be submitted. Please email info@swiftaid.com.au directly.', true);
-			})
-			.finally(function () { setBusy(submit, false, original); });
+				setBusy(submit, false, original);
+				showError(form, 'Sorry, the form could not be submitted. Please email info@swiftaid.com.au directly.');
+			});
 	}
 
 	function init() {

@@ -11,15 +11,97 @@
 	}
 }
 
+/* Divi contact form: lock dark purple bg + white text in every state.
+   Selector covers both et_pb_contact_form and the renamed et_pb_contact_form_static. */
+.et_pb_contact_form .input,
+.et_pb_contact_form_static .input,
+.et_pb_contact_form input[type="text"],
+.et_pb_contact_form_static input[type="text"],
+.et_pb_contact_form input[type="email"],
+.et_pb_contact_form_static input[type="email"],
+.et_pb_contact_form input[type="tel"],
+.et_pb_contact_form_static input[type="tel"],
+.et_pb_contact_form textarea,
+.et_pb_contact_form_static textarea {
+	background-color: #6f2878 !important;
+	color: #ffffff !important;
+}
+
+.et_pb_contact_form .input::placeholder,
+.et_pb_contact_form_static .input::placeholder,
+.et_pb_contact_form textarea::placeholder,
+.et_pb_contact_form_static textarea::placeholder {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Suppress browser autofill yellow/lavender highlight on saved values */
 .et_pb_contact_form .input:-webkit-autofill,
+.et_pb_contact_form_static .input:-webkit-autofill,
 .et_pb_contact_form .input:-webkit-autofill:hover,
+.et_pb_contact_form_static .input:-webkit-autofill:hover,
 .et_pb_contact_form .input:-webkit-autofill:focus,
-.et_pb_contact_form .input:-webkit-autofill:active,
+.et_pb_contact_form_static .input:-webkit-autofill:focus,
+.et_pb_contact_form input:-webkit-autofill,
+.et_pb_contact_form_static input:-webkit-autofill,
 .et_pb_contact_form textarea:-webkit-autofill,
-.et_pb_contact_form textarea:-webkit-autofill:hover,
-.et_pb_contact_form textarea:-webkit-autofill:focus {
+.et_pb_contact_form_static textarea:-webkit-autofill {
 	-webkit-box-shadow: 0 0 0 1000px #6f2878 inset !important;
 	-webkit-text-fill-color: #ffffff !important;
 	caret-color: #ffffff !important;
 	transition: background-color 9999s ease-in-out 0s !important;
+}
+
+/* Custom checkbox / radio indicators: Divi renders the visual square/circle
+   with an empty <i> after the label. Force it to white. */
+.et_pb_contact_form input[type="checkbox"] + label i,
+.et_pb_contact_form_static input[type="checkbox"] + label i,
+.et_pb_contact_form input[type="radio"] + label i,
+.et_pb_contact_form_static input[type="radio"] + label i {
+	background-color: #ffffff !important;
+	border-color: #ffffff !important;
+}
+
+.et_pb_contact_form input[type="checkbox"]:checked + label i:before,
+.et_pb_contact_form_static input[type="checkbox"]:checked + label i:before,
+.et_pb_contact_form input[type="radio"]:checked + label i:before,
+.et_pb_contact_form_static input[type="radio"]:checked + label i:before {
+	color: #6f2878 !important;
+	background-color: #6f2878 !important;
+}
+
+/* Labels stay white */
+.et_pb_contact_form_static label,
+.et_pb_contact_form_static .et_pb_contact_field_options_title,
+.et_pb_contact_form_static .et_pb_contact_field_checkbox label,
+.et_pb_contact_form_static .et_pb_contact_field_radio label {
+	color: #ffffff !important;
+}
+
+/* Career form (Contact Form 7) — same dark purple + white text treatment */
+.wpcf7-form-static input[type="text"],
+.wpcf7-form-static input[type="email"],
+.wpcf7-form-static input[type="tel"],
+.wpcf7-form-static input[type="file"],
+.wpcf7-form-static textarea,
+.wpcf7-form-static select {
+	background-color: #6f2878 !important;
+	color: #ffffff !important;
+	border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+.wpcf7-form-static input::placeholder,
+.wpcf7-form-static textarea::placeholder {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.wpcf7-form-static input:-webkit-autofill,
+.wpcf7-form-static textarea:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0 1000px #6f2878 inset !important;
+	-webkit-text-fill-color: #ffffff !important;
+	caret-color: #ffffff !important;
+	transition: background-color 9999s ease-in-out 0s !important;
+}
+
+.wpcf7-form-static label {
+	color: #ffffff !important;
 }

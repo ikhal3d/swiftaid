@@ -5,18 +5,33 @@
 		var slides = slider.querySelectorAll('.et_pb_slide');
 		if (!slides.length) return;
 		index = ((index % slides.length) + slides.length) % slides.length;
+
+		// Reset any transform Divi's slider may have set on the slides
+		// container — if .et_pb_slides has transform:translate3d(...), the
+		// first slide stays "in view" and class toggles do nothing.
+		var slidesContainer = slider.querySelector('.et_pb_slides');
+		if (slidesContainer) {
+			slidesContainer.style.setProperty('transform', 'none', 'important');
+			slidesContainer.style.setProperty('height', 'auto', 'important');
+		}
+
 		for (var i = 0; i < slides.length; i++) {
+			var s = slides[i];
 			if (i === index) {
-				slides[i].classList.add('et-pb-active-slide');
-				slides[i].style.display = '';
-				slides[i].style.opacity = '1';
-				slides[i].style.zIndex = '2';
+				s.classList.add('et-pb-active-slide');
+				s.style.setProperty('display', 'block', 'important');
+				s.style.setProperty('opacity', '1', 'important');
+				s.style.setProperty('visibility', 'visible', 'important');
+				s.style.setProperty('z-index', '2', 'important');
+				s.style.setProperty('position', 'relative', 'important');
 			} else {
-				slides[i].classList.remove('et-pb-active-slide');
-				slides[i].style.opacity = '0';
-				slides[i].style.zIndex = '1';
+				s.classList.remove('et-pb-active-slide');
+				s.style.setProperty('display', 'none', 'important');
+				s.style.setProperty('opacity', '0', 'important');
+				s.style.setProperty('visibility', 'hidden', 'important');
 			}
 		}
+
 		var dots = slider.querySelectorAll('.et-pb-controllers a');
 		for (var j = 0; j < dots.length; j++) {
 			if (j === index) dots[j].classList.add('et-pb-active-control');

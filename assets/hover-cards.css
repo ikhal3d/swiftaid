@@ -1,8 +1,9 @@
 /* ---------- Home page counters bubble ----------
  * White rounded card that straddles the seam between the purple hero
- * (section_1) and the white about-section (section_3). The bubble is
- * the first row inside section_3, pulled up with a negative margin so
- * roughly half of its height is in the hero, half below.
+ * (section_1) and the white about-section (section_3). All rules here
+ * are scoped to body.home so the et_pb_section_2 / et_pb_section_3
+ * overrides don't bleed onto inner pages where those classes belong
+ * to entirely different content sections.
  *
  * Why display:flow-root on section_3: without it, the bubble's
  * negative margin-top collapses with section_3's own margin-top (per
@@ -12,13 +13,13 @@
  * of how negative the margin is. flow-root makes section_3 a BFC so
  * the margin no longer collapses, and overflow stays visible so the
  * bubble can paint above section_3's top edge into the hero. */
-body #page-container .et_pb_section_3 {
+body.home #page-container .et_pb_section_3 {
 	display: flow-root !important;
 	overflow: visible !important;
 }
 
-body #page-container .et_pb_section_3 .sa-counters-row,
-.sa-counters-row {
+body.home #page-container .et_pb_section_3 .sa-counters-row,
+body.home .sa-counters-row {
 	position: relative !important;
 	z-index: 50 !important;
 	background: #ffffff !important;
@@ -74,22 +75,23 @@ body #page-container .et_pb_section_3 .sa-counters-row,
 }
 
 @media (max-width: 980px) {
-	body #page-container .et_pb_section_3 .sa-counters-row,
-	.sa-counters-row {
+	body.home #page-container .et_pb_section_3 .sa-counters-row,
+	body.home .sa-counters-row {
 		margin-top: -28px !important;
 		padding: 14px 18px !important;
 		border-radius: 24px !important;
 		width: calc(100% - 30px) !important;
 	}
-	.sa-counters {
+	body.home .sa-counters {
 		grid-template-columns: 1fr !important;
 		gap: 20px !important;
 	}
-	.sa-counter-number { font-size: 48px !important; }
+	body.home .sa-counter-number { font-size: 48px !important; }
 }
 
-/* Drop section_2's empty gap so section_3 sits flush under the hero. */
-.et_pb_section.et_pb_section_2 {
+/* Drop section_2's empty gap so section_3 sits flush under the hero
+ * — home page only; on inner pages section_2 is real content. */
+body.home .et_pb_section.et_pb_section_2 {
 	padding: 0 !important;
 	margin: 0 !important;
 	min-height: 0 !important;
@@ -97,7 +99,7 @@ body #page-container .et_pb_section_3 .sa-counters-row,
 	display: block !important;
 }
 
-.et_pb_section.et_pb_section_3 {
+body.home .et_pb_section.et_pb_section_3 {
 	margin-top: 0 !important;
 	padding-top: 0 !important;
 }
